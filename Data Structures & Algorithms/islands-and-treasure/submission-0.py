@@ -1,0 +1,27 @@
+
+from collections import deque
+
+class Solution:
+    def islandsAndTreasure(self, grid: List[List[int]]) -> None:
+        nrow, ncol = len(grid), len(grid[0])
+        for i in range(nrow):
+            for j in range(ncol):
+                if grid[i][j]==0:
+                    q = deque([((i,j), 0)])
+                    seen = set([q[0][0]])
+                    while len(q)>0:
+                        cur,level = q.popleft()
+
+                        # update grid if smaller
+                        if level<grid[cur[0]][cur[1]]:
+                            grid[cur[0]][cur[1]]=level
+                        
+                        # add valid neighbours to the queue with an updated level
+                        for v in [(0,1),(0,-1),(1,0),(-1,0)]:
+                            ihat, jhat = cur[0]+v[0],cur[1]+v[1]
+                            if 0<=ihat<nrow and 0<=jhat<ncol and grid[ihat][jhat]!=-1 and (ihat,jhat) not in seen:
+                                seen.add((ihat,jhat))
+                                q.append(((ihat,jhat),level+1))
+
+
+        
