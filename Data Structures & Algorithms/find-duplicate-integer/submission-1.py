@@ -1,0 +1,49 @@
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        fast,slow = 0,0
+        while True:
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+            if slow==fast:
+                break
+        slow2=0
+        while slow!=slow2:
+            slow=nums[slow]
+            slow2=nums[slow2]
+        # is actually the value, not a pointer!
+        return slow
+
+'''
+st_1 : trivial would be to just ave a hashmap of counts and take the maximum, but the hashmap will take O(N) extra space.
+Challenge:
+- not modifying input array (ex: sorting would make this work)
+- no extra space
+- basically, just iterating through the aray costant 
+  number of times and possible some constant memory (which will be O(1))
+
+maybe jsut the current most freq and its value
+st_2: store val,freq. each incoming element overwrites this with freq 1 (unless current val is 0), unless it's been seen before in which case the freq is appended
+- [1,1,2,2,2,3] -> not possible by the problem statement - if it was, strategy wouldnt work
+- [1,1,2,3,4] (1,1 as val:freq) -> (1,2) since freq more than one -> return 1
+- [1,2,3,3,4] (1,1)->(2,1)->(3,1)->(3,2)->3
+- [1,2,3,4,4] ... (4,2) ->4
+- [1,2,1,3,4] (1,1)->(2,1)->(1,1)->3,1->4,1 -> info lost
+- => this strategy would only work if the input array is sorted to allow for frequencies to stack
+- still O(1) extra space though, so thats an improvement
+
+the problem was tagged linked list -> how would that help?
+if the ll is nodes of unique values, we can assume the input is a path on the linked list
+[1,2,1,3,4]
+ll: 1 -> 2 -> 3 -> 4
+    ^----|
+    |---------^
+but what does it mean for 1->3?
+
+(seeing solution)
+- we were on the right track with the linked list cycle detection! Just didnt see it clear enough on how eactly the structure would be.
+-  i take it back, we were pretty far off - what to do after you're in a cycle is someting i didnt think about.
+- each integer is in range [1,n] which is important, and i didnt acknowledge
+    - this turns out to be important as it is importatnt that the first node (0 index) is ont part of the cycle.
+- the specific number will be at the start of the cycle
+- distance from start of list to start of cycle = distance from interseaction of fast and slow to the start of cycle.
+'''
